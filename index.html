@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #333;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+            font-size: 36px;
+            color: #4caf50;
+        }
+
+        #upload-form {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type=file] {
+            display: block;
+            margin: 10px auto;
+            color: #fff;
+        }
+
+        input[type=submit] {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #result {
+            display: none;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #444;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #result img {
+            width: 100%;
+            border-radius: 8px 8px 0 0;
+        }
+
+        #object-class {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #4caf50;
+        }
+
+        select {
+            font-size: 16px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 10px;
+            color: #333;
+            background-color: #ddd;
+        }
+
+    </style>
+    <script>
+        function submitForm() {
+            var form = document.getElementById('upload-form');
+            var fileInput = document.getElementById('file-input');
+
+            if (fileInput.files.length > 0) {
+                form.submit();
+            } else {
+                alert('Please select a file.');
+            }
+        }
+
+        function showResult(imageData) {
+            var resultContainer = document.getElementById('result');
+            var resultImage = document.getElementById('result-image');
+
+            resultImage.src = 'data:image/png;base64,' + imageData;
+            resultContainer.style.display = 'block';
+        }
+    </script>
+</head>
+<body>
+    <h1>Object Detection</h1>
+    <form id="upload-form" method="post" enctype="multipart/form-data" onsubmit="event.preventDefault(); submitForm();">
+        <input type="file" name="file" id="file-input" accept=".jpg, .jpeg, .png, .gif">
+        <br>
+        <label for="object-class" id="object-class">Select Object Class:</label>
+        <br>
+        <select id="object-class" name="object_class">
+            {% for object_class in available_classes %}
+                <option value="{{ object_class }}">{{ object_class }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Detect Objects">
+    </form>
+
+    <div id="result">
+        <h2>Object Detection Result</h2>
+        <img id="result-image" alt="Object Detection Result">
+    </div>
+
+    {% if image_data %}
+        <script>
+            showResult("{{ image_data }}");
+        </script>
+    {% endif %}
+</body>
+</html>
